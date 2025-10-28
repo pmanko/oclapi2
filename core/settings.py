@@ -189,6 +189,8 @@ if ENABLE_THROTTLING:
         'guest_day': '10000/day',
         'standard_minute': '500/minute',
         'standard_day': '20000/day',
+        'match_standard_minute': '120/minute',
+        'match_standard_day': '2000/day',
     }
     MIDDLEWARE = [*MIDDLEWARE, 'core.middlewares.middlewares.ThrottleHeadersMiddleware']
 
@@ -609,5 +611,3 @@ MINIO_SECURE = os.environ.get('MINIO_SECURE') == 'TRUE'
 if ENV not in ['ci', 'demo']:
     LM_MODEL_NAME = 'all-MiniLM-L6-v2'
     LM = SentenceTransformer(LM_MODEL_NAME)
-
-ANTHROPIC_API_KEY = os.environ.get('ANTHROPIC_API_KEY', None)
