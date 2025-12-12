@@ -39,13 +39,14 @@ class SourceDocument(Document):
     property_codes = fields.ListField(fields.KeywordField())
     filter_codes = fields.ListField(fields.KeywordField())
     match_algorithm = fields.ListField(fields.KeywordField())
+    repo_type = fields.KeywordField()
+    retired = fields.KeywordField(attr='retired')
 
     class Django:
         model = Source
         fields = [
             'full_name',
             'revision_date',
-            'retired',
             'experimental',
             'case_sensitive',
             'compositional',
@@ -185,3 +186,7 @@ class SourceDocument(Document):
     @staticmethod
     def prepare__canonical_url(instance):
         return format_url_for_search(instance.canonical_url)
+
+    @staticmethod
+    def prepare_repo_type(_):
+        return Source.OBJECT_TYPE

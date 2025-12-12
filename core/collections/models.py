@@ -59,6 +59,7 @@ class Collection(DirtyFieldsMixin, ConceptContainerModel):
         'canonical_url': {'sortable': False, 'filterable': True, 'exact': True},
         'experimental': {'sortable': False, 'filterable': False, 'facet': False},
         'external_id': {'sortable': False, 'filterable': True, 'facet': False, 'exact': True},
+        'retired': {'sortable': False, 'filterable': True, 'facet': True},
     }
 
     class Meta:
@@ -1165,7 +1166,7 @@ class Expansion(BaseResourceModel):
     def index_concepts(self):
         if self.concepts.exists():
             if get(settings, 'TEST_MODE', False):
-                index_expansion_concepts(self.id)
+                index_expansion_concepts(self.id, self.concepts.count())
             else:
                 task = None
                 try:
@@ -1174,7 +1175,7 @@ class Expansion(BaseResourceModel):
                         name=index_expansion_concepts.__name__
                     )
                     index_expansion_concepts.apply_async(
-                        (self.id, ), task_id=task.id, queue=task.queue, persist_args=True)
+                        (self.id, self.concepts.count(), ), task_id=task.id, queue=task.queue, persist_args=True)
                 except AlreadyQueued:
                     if task:
                         task.delete()
@@ -1182,7 +1183,7 @@ class Expansion(BaseResourceModel):
     def index_mappings(self):
         if self.mappings.exists():
             if get(settings, 'TEST_MODE', False):
-                index_expansion_mappings(self.id)
+                index_expansion_mappings(self.id, self.mappings.count())
             else:
                 task = None
                 try:
@@ -1191,7 +1192,7 @@ class Expansion(BaseResourceModel):
                         name=index_expansion_mappings.__name__
                     )
                     index_expansion_mappings.apply_async(
-                        (self.id, ), task_id=task.id, queue=task.queue, persist_args=True)
+                        (self.id, self.mappings.count()), task_id=task.id, queue=task.queue, persist_args=True)
                 except AlreadyQueued:
                     if task:
                         task.delete()
