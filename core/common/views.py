@@ -542,7 +542,6 @@ class BaseAPIView(generics.GenericAPIView, PathWalkerMixin):
             try:
                 s = faceted_search.execute()
                 facets = s.facets.to_dict()
-                print("Only Facets Query", facets)
             except TransportError as ex:  # pragma: no cover
                 raise Http400(detail=get(ex, 'info') or get(ex, 'error') or str(ex)) from ex
         if not get(self.request.user, 'is_authenticated'):
@@ -574,7 +573,6 @@ class BaseAPIView(generics.GenericAPIView, PathWalkerMixin):
                 facets.pop('collection_owner_url', None)
         facets.pop('is_in_latest_source_version', None)
         facets.pop('is_latest_version', None)
-        print("Only Facets Query2", facets)
 
         if parent_repo and self.is_concept_document():
             return parent_repo.get_ordered_concept_facets_by_filter_order(facets)
@@ -1223,7 +1221,8 @@ class RootView(BaseAPIView):  # pragma: no cover
                     name = 'current_user'
             if name == 'core.toggles':
                 name = 'toggles'
-
+            if not name:
+                continue
             host_url = main_host_url.replace('://api.', '://fhir.') if 'fhir' in name else main_host_url
             data['routes'][name] = host_url + '/' + route
 
