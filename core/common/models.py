@@ -1106,11 +1106,6 @@ class ConceptContainerModel(VersionedModel, ChecksumModel):
     @property
     def concepts_distribution(self):
         facets = self.get_concept_facets()
-        print("Concept facets Raw", facets)
-        try:
-            print("Concept facets", facets.to_dict())
-        except: # pylint: disable=bare-except
-            pass
         return {
             'active': self.active_concepts,
             'retired': self.retired_concepts_count,
@@ -1160,6 +1155,9 @@ class ConceptContainerModel(VersionedModel, ChecksumModel):
 
     def get_name_locale_distribution(self):
         return self._get_distribution(self.get_name_locales_queryset(), 'locale')
+
+    def get_name_locale_list_distribution(self):
+        return self.get_concepts_queryset().distinct('names__locale').values_list('names__locale', flat=True)
 
     def get_name_type_distribution(self):
         return self._get_distribution(self.get_name_locales_queryset(), 'type')

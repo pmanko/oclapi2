@@ -122,6 +122,11 @@ urlpatterns = [
         name='collection-extras'
     ),
     path(
+        '<str:collection>/expansions/',
+        views.CollectionExpansionsView.as_view(),
+        name='expansion-list-collection'
+    ),
+    path(
         '<str:collection>/<str:version>/',
         views.CollectionVersionRetrieveUpdateDestroyView.as_view(),
         name='collection-version-detail'
@@ -140,6 +145,11 @@ urlpatterns = [
         '<str:collection>/<str:version>/expansions/<str:expansion>/',
         views.CollectionVersionExpansionView.as_view(),
         name='collection-version-expansion-detail'
+    ),
+    path(
+        '<str:collection>/<str:version>/expansions/<str:expansion>/re-evaluate/',
+        views.CollectionVersionExpansionReEvaluateView.as_view(),
+        name='collection-version-expansion-re-evaluate'
     ),
     path(
         "<str:collection>/<str:version>/expansions/<str:expansion>/concepts/<str:concept>/mappings/",

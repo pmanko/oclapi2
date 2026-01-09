@@ -415,11 +415,11 @@ def seed_children_to_new_version(self, resource, obj_id, export=True, sync=False
 
 
 @app.task
-def seed_children_to_expansion(expansion_id, index=True):
+def seed_children_to_expansion(expansion_id, index=True, force_reevaluate=False):
     from core.collections.models import Expansion
     expansion = Expansion.objects.filter(id=expansion_id).first()
     if expansion:
-        expansion.seed_children(index=index)
+        expansion.seed_children(index=index, force_reevaluate=force_reevaluate)
         if expansion.is_processing:
             expansion.is_processing = False
             expansion.save()
@@ -559,7 +559,7 @@ def batch_index_resources(resource, filters, update_indexed=False):
     ignore_result=True, autoretry_for=(Exception, WorkerLostError, ), retry_kwargs={'max_retries': 2, 'countdown': 2},
     acks_late=True, reject_on_worker_lost=True, base=QueueOnceCustomTask
 )
-def index_expansion_concepts(expansion_id):
+def index_expansion_concepts(expansion_id, count=None):  # pylint: disable=unused-argument
     from core.collections.models import Expansion
     expansion = Expansion.objects.filter(id=expansion_id).first()
     if expansion:
@@ -571,7 +571,7 @@ def index_expansion_concepts(expansion_id):
     ignore_result=True, autoretry_for=(Exception, WorkerLostError, ), retry_kwargs={'max_retries': 2, 'countdown': 2},
     acks_late=True, reject_on_worker_lost=True, base=QueueOnceCustomTask
 )
-def index_expansion_mappings(expansion_id):
+def index_expansion_mappings(expansion_id, count=None):  # pylint: disable=unused-argument
     from core.collections.models import Expansion
     expansion = Expansion.objects.filter(id=expansion_id).first()
     if expansion:

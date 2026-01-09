@@ -11,6 +11,12 @@ from core.repos.search import RepoFacetedSearch
 from core.repos.serializers import RepoListSerializer
 
 es_fields = {
+    'repo_type': {
+        'sortable': True,
+        'filterable': True,
+        'facet': True,
+        'exact': True
+    },
     'source_type': {
         'sortable': True,
         'filterable': True,
@@ -94,6 +100,11 @@ es_fields = {
         'filterable': True,
         'facet': False,
         'exact': True
+    },
+    'retired': {
+        'sortable': False,
+        'filterable': True,
+        'facet': True
     },
 }
 
